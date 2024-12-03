@@ -1,4 +1,5 @@
 import pytest
+from selenium import webdriver
 from page_objects.main_page import MainPage
 
 @pytest.mark.parametrize("index", range(0, 10))  # Параметризация для проверки всех доступных вопросов
