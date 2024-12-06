@@ -1,52 +1,54 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
+import allure
+from page_objects.base_page import BasePage
+from .locators import MainPageLocators
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class MainPage:
-    def __init__(self, driver):
-        self.driver = driver
-
-    def open_question(self, index):
-        questions = self.driver.find_elements(By.CSS_SELECTOR, ".accordion__button")
-        if index >= len(questions):
-            raise IndexError(f"Вопрос с индексом {index} отсутствует. Доступно вопросов: {len(questions)}")
-        question = questions[index]
-
-        # Прокрутка к элементу с учетом границ viewport
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", question)
-
-        # Убедимся, что элемент кликабелен
-        ActionChains(self.driver).move_to_element(question).perform()
-
-        # Ожидание кликабельности
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(question)
-        )
-        question.click()
-
-    def get_answer_text(self, index):
-        # Получаем все ответы на вопросы
-        answers = self.driver.find_elements(By.CSS_SELECTOR, ".accordion__panel")
-        if index >= len(answers):
-            raise IndexError(f"Ответ для вопроса с индексом {index} отсутствует. Доступно ответов: {len(answers)}")
-        # Возвращаем текст ответа
-        return answers[index].text
-
-    def get_total_questions(self):
-        # Возвращаем количество всех доступных вопросов
-        questions = self.driver.find_elements(By.CSS_SELECTOR, ".accordion__button")
-        return len(questions)
-
+class MainPage(BasePage):
+    @allure.step("Клик по кнопке 'Заказать' на позиции {position}")
     def click_order_button(self, position="top"):
-        # Находим кнопку "Заказать"
         if position == "top":
-            order_button = self.driver.find_element(By.CSS_SELECTOR, ".Button_Button__ra12g")
+            self.click_element(*MainPageLocators.ORDER_BUTTON_TOP)
         elif position == "bottom":
-            order_button = self.driver.find_element(By.CSS_SELECTOR, ".Button_Button__ra12g.Button_Middle__1CSJM")
+            self.click_element(*MainPageLocators.ORDER_BUTTON_BOTTOM)
         else:
-            raise ValueError(f"Неизвестная позиция кнопки: {position}")
+            raise ValueError(f"Неизвестная позиция: {position}")
 
-        # Кликаем по кнопке
-        order_button.click()
+    @allure.step("Прокрутка к секции вопросов")
+    def scroll_to_questions_section(self):
+        self.scroll_to_element(*MainPageLocators.QUESTIONS_SECTION)
+
+    @allure.step("Ожидание кнопок вопросов")
+    def wait_for_questions(self):
+        return self.wait.until(
+            EC.presence_of_all_elements_located(MainPageLocators.QUESTIONS_BUTTONS)
+        )
+
+    @allure.step("Открытие вопроса с индексом {index}")
+    def open_question(self, index):
+        question_buttons = self.find_elements(*MainPageLocators.QUESTIONS_BUTTONS)
+
+        if index >= len(question_buttons):
+            raise IndexError(f"Вопрос с индексом {index} отсутствует. Доступно вопросов: {len(question_buttons)}")
+
+        self.scroll_to_element(*MainPageLocators.QUESTIONS_BUTTONS)
+        question_buttons[index].click()
+
+    @allure.step("Получение текста ответа для вопроса с индексом {index}")
+    def get_answer_text(self, index):
+        answer_elements = self.wait.until(
+            EC.presence_of_all_elements_located(MainPageLocators.ANSWERS_TEXTS)
+        )
+        return answer_elements[index].text
+
+    @allure.step("Клик по логотипу 'Самоката'")
+    def click_scooter_logo(self):
+        self.click_element(*MainPageLocators.SCOOTER_LOGO)
+
+    @allure.step("Клик по логотипу Яндекса")
+    def click_yandex_logo(self):
+        self.click_element(*MainPageLocators.YANDEX_LOGO)
+
+    @allure.step("Получение текущего URL")
+    def get_current_url(self):
+        return self.driver.current_url

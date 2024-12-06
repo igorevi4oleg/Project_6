@@ -1,5 +1,0 @@
-Клик по полю метро выполнен.
-Выбрана первая станция метро.
-Ошибка при переходе на Яндекс: Редирект на Яндекс не работает
-assert 'zen.yandex.ru' in 'about:blank'
- +  where 'about:blank' = <selenium.webdriver.firefox.webdriver.WebDriver (session="60c6bdd2-7ba5-4b8b-a091-910b6c66ad35")>.current_url
