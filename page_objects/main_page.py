@@ -20,9 +20,8 @@ class MainPage(BasePage):
 
     @allure.step("Ожидание кнопок вопросов")
     def wait_for_questions(self):
-        return self.wait.until(
-            EC.presence_of_all_elements_located(MainPageLocators.QUESTIONS_BUTTONS)
-        )
+        """Вызов метода ожидания с локатором вопросов."""
+        return super().wait_for_questions(MainPageLocators.QUESTIONS_BUTTONS)
 
     @allure.step("Открытие вопроса с индексом {index}")
     def open_question(self, index):
@@ -52,3 +51,11 @@ class MainPage(BasePage):
     @allure.step("Получение текущего URL")
     def get_current_url(self):
         return self.driver.current_url
+
+    @allure.step("Получение текущего URL страницы")
+    def get_current_url(self):
+        return self.driver.current_url
+
+    @allure.step("Переключение на новое окно")
+    def switch_to_new_window(self):
+        self.driver.switch_to.window(self.driver.window_handles[1])

@@ -2,6 +2,7 @@ import pytest
 from selenium import webdriver
 from page_objects.main_page import MainPage
 from page_objects.order_page import OrderPage
+from page_objects.base_page import BasePage
 
 
 @pytest.fixture(scope="function")
@@ -21,3 +22,8 @@ def main_page(driver):
 def order_page(driver):
     """Фикстура для страницы оформления заказа"""
     return OrderPage(driver)
+
+@pytest.fixture
+def base_page(driver):
+    """Фикстура для базовой страницы"""
+    return BasePage(driver)

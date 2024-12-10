@@ -34,7 +34,3 @@ class OrderPage(BasePage):
         self.click_element(*OrderPageLocators.ACCEPT_ORDER_BUTTON)
         self.click_element(*OrderPageLocators.CONFIRM_YES_BUTTON)
         self.click_element(*OrderPageLocators.STATUS_BUTTON)
-
-    @allure.step("Получение текущего URL")
-    def get_current_url(self):
-        return self.driver.current_url

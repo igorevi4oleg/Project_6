@@ -37,3 +37,22 @@ class BasePage:
 
         element = self.wait.until(EC.presence_of_element_located((by, value)))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+
+    def wait_for_questions(self, locator):
+
+        return self.wait.until(
+            EC.presence_of_all_elements_located(locator)
+        )
+
+    def get_current_url(self):
+        return self.driver.current_url
+
+
+    def switch_to_new_window(self, locator):
+
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+
+    def wait_for_url_to_be(self, url, timeout=10):
+
+        WebDriverWait(self.driver, timeout).until(EC.url_to_be(url))
