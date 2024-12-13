@@ -1,7 +1,6 @@
 import allure
 from page_objects.base_page import BasePage
 from .locators import MainPageLocators
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class MainPage(BasePage):
@@ -20,8 +19,7 @@ class MainPage(BasePage):
 
     @allure.step("Ожидание кнопок вопросов")
     def wait_for_questions(self):
-        """Вызов метода ожидания с локатором вопросов."""
-        return super().wait_for_questions(MainPageLocators.QUESTIONS_BUTTONS)
+        return self.wait_for_elements_present(*MainPageLocators.QUESTIONS_BUTTONS)
 
     @allure.step("Открытие вопроса с индексом {index}")
     def open_question(self, index):
@@ -35,9 +33,7 @@ class MainPage(BasePage):
 
     @allure.step("Получение текста ответа для вопроса с индексом {index}")
     def get_answer_text(self, index):
-        answer_elements = self.wait.until(
-            EC.presence_of_all_elements_located(MainPageLocators.ANSWERS_TEXTS)
-        )
+        answer_elements = self.wait_for_elements_present(*MainPageLocators.ANSWERS_TEXTS)
         return answer_elements[index].text
 
     @allure.step("Клик по логотипу 'Самоката'")
@@ -48,14 +44,10 @@ class MainPage(BasePage):
     def click_yandex_logo(self):
         self.click_element(*MainPageLocators.YANDEX_LOGO)
 
-    @allure.step("Получение текущего URL")
-    def get_current_url(self):
-        return self.driver.current_url
-
     @allure.step("Получение текущего URL страницы")
     def get_current_url(self):
-        return self.driver.current_url
+        return super().get_current_url()
 
     @allure.step("Переключение на новое окно")
     def switch_to_new_window(self):
-        self.driver.switch_to.window(self.driver.window_handles[1])
+        super().switch_to_new_window()
